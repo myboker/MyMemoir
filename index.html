@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Life Nebula | 个人传记</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700&family=ZCOOL+XiaoWei&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <canvas id="nebula-canvas" aria-hidden="true"></canvas>
+    <div class="cosmos-bg" aria-hidden="true"></div>
+    <div class="nebula nebula-blue" aria-hidden="true"></div>
+    <div class="nebula nebula-cyan" aria-hidden="true"></div>
+    <div class="starfield" aria-hidden="true"></div>
+
+    <main class="shell memoir-shell">
+      <header class="app-header">
+        <div>
+          <p class="eyebrow">Life Nebula</p>
+          <h1>个人传记</h1>
+        </div>
+        <p class="app-subtitle">记录经历，梳理关系，生成一部持续生长的自传。</p>
+      </header>
+
+      <section class="memoir-grid">
+        <aside class="sidebar memoir-map-panel" aria-label="事件星云图">
+          <div class="sidebar-head">
+            <div>
+              <p class="section-kicker">Event Graph</p>
+              <h2>经历星云</h2>
+            </div>
+            <button class="ghost-button" id="new-entry" type="button">新事件</button>
+          </div>
+
+          <div class="sidebar-folders">
+            <button class="fold-button" id="search-toggle" type="button" aria-expanded="false">
+              <span>搜索事件</span>
+              <span class="fold-icon" aria-hidden="true"></span>
+            </button>
+            <div class="fold-panel collapsed" id="search-panel">
+              <label class="search-box">
+                <span>搜索事件</span>
+                <input id="search" type="search" placeholder="人物、地点、时期、主题..." />
+              </label>
+            </div>
+
+            <button class="fold-button" id="index-toggle" type="button" aria-expanded="false">
+              <span>事件索引</span>
+              <span class="fold-icon" aria-hidden="true"></span>
+            </button>
+            <div class="fold-panel collapsed" id="index-panel">
+              <div class="index-card inline-index">
+                <div id="event-index-list" class="event-index-list"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="galaxy-map memoir-galaxy" id="entry-list">
+            <canvas id="diary-galaxy" aria-label="动态事件关系星云图"></canvas>
+            <div class="galaxy-empty empty-state" id="galaxy-empty"></div>
+          </div>
+        </aside>
+
+        <section class="editor-card memoir-editor" aria-label="经历编辑器">
+          <div class="editor-topline">
+            <div class="save-state" id="save-state">准备记录经历</div>
+          </div>
+
+          <div class="title-line">
+            <label class="field title-field">
+              <span>事件标题</span>
+              <input id="title" type="text" placeholder="可留空，例如：离开故乡之前的那个夏天" maxlength="80" />
+            </label>
+            <button class="detail-toggle" id="detail-toggle" type="button" aria-expanded="false" title="更多信息">
+              <span class="detail-icon" aria-hidden="true"></span>
+              <span class="sr-only">更多信息</span>
+            </button>
+          </div>
+
+          <section class="agent-panel collapsed" id="detail-panel">
+            <div class="period-grid">
+              <label class="date-picker">
+                <span>开始日期</span>
+                <input id="entry-start-date" type="date" />
+              </label>
+              <label class="date-picker">
+                <span>结束日期</span>
+                <input id="entry-end-date" type="date" />
+              </label>
+            </div>
+            <div class="agent-chip" id="date-reason">如果正文里提到时间，“梳理传记”时会自动识别并填入。</div>
+            <label class="field hidden-importance">
+              <span>重要性评分：<strong id="importance-label">5.0</strong></span>
+              <input id="importance" type="range" min="1" max="10" step="0.1" value="5" />
+            </label>
+            <div class="agent-chip" id="importance-reason">重要性会影响星云节点大小和呼吸速度。</div>
+
+            <div class="agent-fields" aria-label="代理整理结果">
+              <label class="field">
+                <span>摘要</span>
+                <textarea id="summary" class="compact-textarea" placeholder="点击“梳理传记”后自动生成"></textarea>
+              </label>
+              <label class="field">
+                <span>索引关键词</span>
+                <input id="tags" type="text" placeholder="人物、地点、主题、转折..." />
+              </label>
+              <label class="field">
+                <span>人生主题</span>
+                <input id="themes" type="text" placeholder="离别、成长、家庭、职业选择..." />
+              </label>
+              <label class="field">
+                <span>关联说明</span>
+                <textarea id="relations" class="compact-textarea" placeholder="事件之间的联系会在梳理时生成"></textarea>
+              </label>
+            </div>
+          </section>
+
+          <label class="field body-field memoir-body">
+            <span>经历内容</span>
+            <span class="writing-surface">
+              <canvas id="writing-effects" aria-hidden="true"></canvas>
+              <textarea
+                id="content"
+                placeholder="写下某段时期发生的一段经历。可以自然提到年份、月份、地点、人物、转折和后来才明白的事。"
+              ></textarea>
+            </span>
+          </label>
+
+          <div class="memoir-actions">
+            <button class="danger-button" id="delete-entry" type="button">删除</button>
+            <button class="ghost-button" id="save-entry" type="button">保存</button>
+            <button class="primary-button" id="organize-biography" type="button">梳理传记</button>
+          </div>
+        </section>
+
+        <section class="editor-card biography-panel" aria-label="总体传记">
+          <div class="biography-head">
+            <div>
+              <p class="section-kicker">Autobiography</p>
+              <h2>自传草稿</h2>
+            </div>
+            <button class="ghost-button settings-toggle" id="settings-toggle" type="button">设置</button>
+          </div>
+
+          <section class="settings-panel collapsed" id="settings-panel">
+            <label class="style-picker">
+              <span>行文风格</span>
+              <select id="style-select">
+                <option value="self">保持用户自己的风格</option>
+                <option value="kawabata">川端康成式：冷静、纤细、留白</option>
+                <option value="maugham">毛姆式：清醒、节制、旁观</option>
+                <option value="marquez">马尔克斯式：丰饶、命运感、魔幻现实</option>
+                <option value="yuhua">余华式：朴素、锋利、带荒诞感</option>
+              </select>
+            </label>
+            <div class="export-row">
+              <button class="ghost-button mini-button" id="export-text" type="button">导出全文</button>
+              <button class="ghost-button mini-button" id="export-image" type="button">导出当前章节图片</button>
+            </div>
+            <div class="history-card compact-history">
+              <div class="history-head">
+                <div>
+                  <p class="section-kicker">Versions</p>
+                  <h3>修改记录</h3>
+                </div>
+                <button class="ghost-button mini-button" id="undo-version" type="button">回退上一版</button>
+              </div>
+              <div id="history-list" class="history-list"></div>
+            </div>
+          </section>
+
+          <div class="outline-card">
+            <p class="section-kicker">Structure</p>
+            <h3>传记架构</h3>
+            <div id="biography-outline" class="biography-outline"></div>
+          </div>
+
+          <label class="style-picker chapter-picker">
+            <span>当前章节</span>
+            <select id="chapter-select"></select>
+          </label>
+
+          <textarea id="biography" class="biography-textarea" placeholder="点击“梳理传记”后，会按章节生成自传草稿。你也可以直接修改。"></textarea>
+
+          <div class="memoir-actions biography-actions">
+            <button class="primary-button" id="save-biography-edit" type="button">保存人工修改</button>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
